@@ -49,3 +49,32 @@ window.addEventListener('scroll', () => {
         header.style.background = 'rgba(255, 255, 255, 0.95)';
     }
 });
+
+// Background Slideshow
+const backgroundImages = [
+    'images/彩色琉璃独角兽-欧式背景.png',
+    'images/折纸小鸟-彩色背景.png',
+    'images/白纱裙跳舞女孩-黑白色.png',
+    'images/透明蝴蝶女孩背景-蓝天草地背景.png',
+    'images/翠绿牛油果-画面居中.png'
+];
+
+const slides = document.querySelectorAll('.hero-slide');
+let currentSlide = 0;
+
+// Initialize slides with images
+slides.forEach((slide, index) => {
+    slide.style.backgroundImage = `url('${backgroundImages[index]}')`;
+});
+
+// Show first slide
+slides[0].classList.add('active');
+
+function nextSlide() {
+    slides[currentSlide].classList.remove('active');
+    currentSlide = (currentSlide + 1) % slides.length;
+    slides[currentSlide].classList.add('active');
+}
+
+// Change slide every 5 seconds
+setInterval(nextSlide, 5000);
