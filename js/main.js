@@ -23,14 +23,14 @@ const subscribeBtn = document.querySelector('.subscribe-btn');
 subscribeBtn.addEventListener('click', (e) => {
     e.preventDefault();
     if (emailInput.value.trim() === '') {
-        alert('Please enter your email address');
+        alert('请输入您的邮箱地址');
         return;
     }
     if (!isValidEmail(emailInput.value)) {
-        alert('Please enter a valid email address');
+        alert('请输入有效的邮箱地址');
         return;
     }
-    alert('Thank you for subscribing!');
+    alert('感谢您的订阅！');
     emailInput.value = '';
 });
 
@@ -53,7 +53,6 @@ window.addEventListener('scroll', () => {
 // Background Slideshow
 const backgroundImages = [
     "images/img2.png",
-    "images/img1-red-no-bg.png",
     'images/彩色琉璃独角兽-欧式背景.png',
     'images/折纸小鸟-彩色背景.png',
     'images/透明蝴蝶女孩背景-蓝天草地背景.png',
@@ -77,5 +76,71 @@ function nextSlide() {
     slides[currentSlide].classList.add('active');
 }
 
-// Change slide every 5 seconds
-setInterval(nextSlide, 5000);
+// Change slide every 1 seconds
+setInterval(nextSlide, 1000);
+
+// 产品滑动卡片逻辑
+(function() {
+    const slider = document.querySelector('.product-slider');
+    const slides = document.querySelectorAll('.product-slide');
+    const leftBtn = document.querySelector('.slider-arrow-left');
+    const rightBtn = document.querySelector('.slider-arrow-right');
+    let currentIndex = 0;
+    const slideCount = slides.length;
+    let autoPlayTimer = null;
+    let isHovered = false;
+
+    function scrollToIndex(index) {
+        const slideWidth = slides[0].offsetWidth + 20; // 20px margin
+        slider.scrollTo({
+            left: slideWidth * index,
+            behavior: 'smooth'
+        });
+    }
+
+    function nextSlide() {
+        currentIndex = (currentIndex + 1) % slideCount;
+        scrollToIndex(currentIndex);
+    }
+    function prevSlide() {
+        currentIndex = (currentIndex - 1 + slideCount) % slideCount;
+        scrollToIndex(currentIndex);
+    }
+
+    leftBtn.addEventListener('click', prevSlide);
+    rightBtn.addEventListener('click', nextSlide);
+
+    // 自动轮播
+    function startAutoPlay() {
+        if (autoPlayTimer) return;
+        autoPlayTimer = setInterval(() => {
+            if (!isHovered) {
+                nextSlide();
+            }
+        }, 1000);
+    }
+    function stopAutoPlay() {
+        clearInterval(autoPlayTimer);
+        autoPlayTimer = null;
+    }
+    slider.addEventListener('mouseenter', function() {
+        isHovered = true;
+    });
+    slider.addEventListener('mouseleave', function() {
+        isHovered = false;
+    });
+    startAutoPlay();
+
+    // 移动端滑动支持
+    let startX = 0;
+    let scrollLeft = 0;
+    slider.addEventListener('touchstart', (e) => {
+        startX = e.touches[0].pageX;
+        scrollLeft = slider.scrollLeft;
+    });
+    slider.addEventListener('touchmove', (e) => {
+        const x = e.touches[0].pageX;
+        const walk = startX - x;
+        slider.scrollLeft = scrollLeft + walk;
+    });
+})();
